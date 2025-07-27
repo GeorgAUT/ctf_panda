@@ -20,7 +20,7 @@ def main(config_path: str):
     dataset_name = config['dataset']['name']
     pair_ids = parse_pair_ids(config['dataset'])
 
-    model_name = "Koopman"
+    model_name = "Panda"
     # Generate a unique batch_id for this run
     batch_id = f"batch_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
@@ -52,7 +52,7 @@ def main(config_path: str):
         training_timesteps = get_training_timesteps(dataset_name, pair_id)
 
         # Initialize the model with the config and train_data
-        model = KoopmanModel(config, train_data, init_data, training_timesteps, prediction_timesteps, pair_id)
+        model = PandaModel(config, train_data, init_data, training_timesteps, prediction_timesteps, pair_id)
                 
         # Train the model
         model.train()
@@ -88,6 +88,6 @@ if __name__ == "__main__":
     parser.add_argument('config', type=str, help="Path to the configuration file")
     args = parser.parse_args()
     main(args.config)
-    #main("models/ctf_koopman/config/config0_Lorenz.yaml")
-    #main("models/ctf_koopman/config/config0_KS.yaml")
-    # main("models/ctf_koopman/config/config_ODE_Lorenz_9_optimized.yaml")
+    #main("models/ctf_panda/config/config0_Lorenz.yaml")
+    #main("models/ctf_panda/config/config0_KS.yaml")
+    # main("models/ctf_panda/config/config_ODE_Lorenz_9_optimized.yaml")

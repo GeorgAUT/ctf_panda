@@ -8,7 +8,7 @@ import datetime
 from ctf4science.data_module import load_dataset, parse_pair_ids, get_prediction_timesteps, get_training_timesteps, _load_test_data
 from ctf4science.eval_module import evaluate, save_results
 from ctf4science.visualization_module import Visualization
-from ctf_koopman import KoopmanModel
+from ctf_panda import PandaModel
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib import cm
@@ -27,7 +27,7 @@ def main(config_path):
     dataset_name = config['dataset']['name']
     pair_ids = parse_pair_ids(config['dataset'])
 
-    model_name = "Koopman"
+    model_name = "Panda"
     # Generate a unique batch_id for this run
     batch_id = f"batch_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
@@ -64,7 +64,7 @@ def main(config_path):
         # prediction_time_steps = prediction_timesteps.shape[0]
 
         # Initialize the model with the config and train_data
-        model = KoopmanModel(config, train_data, init_data, training_timesteps, prediction_timesteps, pair_id)
+        model = PandaModel(config, train_data, init_data, training_timesteps, prediction_timesteps, pair_id)
         
         model.train()
         
@@ -136,30 +136,25 @@ def main(config_path):
             #     ax.axvline(times['KS'][cut_train], color='black', linestyle='--')
             #     ax.axvline(times['KS'][2*cut_train], color='black', linestyle='--')
 
-        # K = model.A
-
-        # # Let's have a look at the eigenvalues of the Koopman matrix
-        # evals, evecs = np.linalg.eig(K)
-        # evals_cont = np.log(evals)#/delta_t
-
-        # fig = plt.figure(figsize=(4,4))
-        # ax = fig.add_subplot(111)
-        # ax.plot(evals_cont.real, evals_cont.imag, 'bo', label='estimated',markersize=5)
-
-
 
         # Evaluate predictions using default metrics
-        results = evaluate(dataset_name, pair_id, pred_data)
+        try:
+            results = evaluate(dataset_name, pair_id, pred_data)
 
-        # Save results for this sub-dataset and get the path to the results directory
-        results_directory = save_results(dataset_name, model_name, batch_id, pair_id, config, pred_data, results)
+            # Save results for this sub-dataset and get the path to the results directory
+            results_directory = save_results(dataset_name, model_name, batch_id, pair_id, config, pred_data, results)
 
-        # Append metrics to batch results
-        # Convert metric values to plain Python floats for YAML serialization
-        batch_results['pairs'].append({
-            'pair_id': pair_id,
-            'metrics': results
-        })
+            # Append metrics to batch results
+            # Convert metric values to plain Python floats for YAML serialization
+            batch_results['pairs'].append({
+                'pair_id': pair_id,
+                'metrics': results
+            })  # <-- added missing closing parenthesis
+
+        except:
+            print(f"Error evaluating predictions for pair_id {pair_id}. Skipping this pair.")
+            continue  # Skip to the next pair if evaluation fails
+
 
     # Print batch results in a nice table
     print("\nBatch Results Summary:")
@@ -186,6 +181,5 @@ if __name__ == "__main__":
     # parser = argparse.ArgumentParser()
     # parser.add_argument('config', type=str, help="Path to the configuration file")
     # args = parser.parse_args()
-    # main("models/ctf_koopman/config/config1_Lorenz.yaml")
-    # main("models/ctf_koopman/config/config1_KS.yaml")
-    main("models/ctf_koopman/config/config_ODE_Lorenz_all_optimized.yaml")
+    #main("models/ctf_panda/config/config1_Lorenz.yaml")
+    main("models/ctf_panda/config/config1_KS.yaml")

@@ -1,10 +1,15 @@
-# Python 3.10 or earlier
-# pyenv install 3.10
-# pyenv local 3.10
-# python -m venv venv
-# source venv/bin/activate
-# pip install --upgrade pip
-# pip install requirements.txt
-numpy == 1.26.0
-pydmd == 0.4.1
-pykoopman == 1.1.0
+# Python 3.10 or later is required.
+
+# Installation instructions from the official repo:
+# https://github.com/abao1999/panda/tree/450aa4154c833fd8c720fe0cc8fc0232cca23ac6
+
+# dysts for dynamical systems
+pip install --no-deps git+https://github.com/williamgilpin/dysts
+
+# numba is optional but recommended for performance
+pip install numba
+
+# Install the Panda model from the official repository
+git clone --depth=1 git@github.com:abao1999/panda.git
+cd panda
+pip install -e .
