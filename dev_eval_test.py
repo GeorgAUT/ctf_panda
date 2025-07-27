@@ -181,5 +181,5 @@ if __name__ == "__main__":
     # parser = argparse.ArgumentParser()
     # parser.add_argument('config', type=str, help="Path to the configuration file")
     # args = parser.parse_args()
-    #main("models/ctf_panda/config/config1_Lorenz.yaml")
-    main("models/ctf_panda/config/config1_KS.yaml")
+    main("models/ctf_panda/config/config1_Lorenz.yaml")
+    #main("models/ctf_panda/config/config1_KS.yaml")

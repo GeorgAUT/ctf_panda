@@ -1,3 +1,4 @@
+# from turtle import mode
 from unicodedata import normalize
 import numpy as np
 from typing import Dict, Optional
@@ -7,6 +8,13 @@ from panda.patchtst.pipeline import PatchTSTPipeline
 from panda.utils import (
     apply_custom_style,
     plot_trajs_multivariate, safe_standardize
+)
+
+from panda.utils.train_utils import load_patchtst_model
+
+from panda.patchtst.patchtst import (
+    PatchTSTForPrediction,
+    PatchTSTForPretraining,
 )
 
 class PandaModel:
@@ -47,15 +55,19 @@ class PandaModel:
         """
         Load the Panda model from https://huggingface.co/GilpinLab/panda_mlm/tree/main
         """
-        print("PandaModel: loaded as zero-shot model, no training is performed.")
+        if self.config['model']['zero_shot']:
+            print("PandaModel: loaded as zero-shot model, no training is performed.")
+            
+            ## Load MLM trained model from Hugging Face
+            self.model_pipeline = PatchTSTPipeline.from_pretrained(
+                mode="predict",
+                pretrain_path=self.config['model']['weights'],
+                device_map="cpu",#"cuda:0",
+                torch_dtype=torch.float32,
+            )
 
-        ## Load MLM trained model from Hugging Face
-        self.model_pipeline = PatchTSTPipeline.from_pretrained(
-            mode="predict",
-            pretrain_path=self.config['model']['weights'],
-            device_map="cpu",#"cuda:0",
-            torch_dtype=torch.float32,
-        )
+        else:
+            NotImplementedError("Training of Panda model is not implemented yet. Please use the zero-shot mode for now.")
 
 
     def predict(self):
