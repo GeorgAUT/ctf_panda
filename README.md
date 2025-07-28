@@ -31,40 +31,25 @@ Each configuration file must include the following:
     - Omitted or `'all'`: Runs on all sub-datasets.
 - **`model`**:
   - `name`: `Panda`
-  - `model_path`: Path to the pre-trained MLM model (default: HuggingFace GilpinLab/panda_mlm)
-  - `learning_rate`: Learning rate for fine-tuning
-  - `num_epochs`: Number of training epochs
-  - `batch_size`: Batch size for training
-  - `physical_constraints`: Boolean flag to enable/disable physical constraints
+  - `zero_shot`: Boolean flag to enable/disable fine-tuning (note currently only `zero_shot=True` is implemented)
+  - `weights`: Path to the pre-trained MLM model (default: HuggingFace GilpinLab/panda_mlm)
+  - `normalize`: Boolean flag to normalise the data with the standard routine provided by Panda's repo
+  - `context_length`: Maximum length of the context for the foundation model, note that `context_length=-1` corresponds to using the full warm-start data as context, but this needs to be limited in the PDE case due to computational constraints.
+  
 
 Example configuration:
 ```yaml
 dataset:
   name: ODE_Lorenz
-  pair_id: 1-9
+  pair_id: 1-9 
 model:
-  name: PAnda
-  model_path: "GilpinLab/panda_mlm"
-  learning_rate: 1e-4
-  num_epochs: 100
-  batch_size: 32
-  physical_constraints: true
+  name: Panda
+  zero_shot: True
+  weights: "GilpinLab/panda_mlm"
+  normalize: False
+  context_length: -1
 ```
 
 ## Requirements
 
-PAnda for CTF relies on Python@3.10 and the following packages listed in `requirements.txt`:
-- numpy
-- torch
-- transformers
-- accelerate
-- datasets
-- evaluate
-- scipy
-- matplotlib
-- tqdm
-- yaml
-
-## License
-
-This implementation is released under the MIT License.
+PAnda for CTF relies on Python>=3.10 and the packages listed in `requirements.txt`.
